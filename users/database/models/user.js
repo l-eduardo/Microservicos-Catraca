@@ -16,7 +16,7 @@ User.init({
   category: {
       allowNull: false,
       type: DataTypes.ENUM,
-      values: ["Estudande", "Tae", "Professor", "Visitante"],
+      values: ["Estudante", "Tae", "Professor", "Visitante"],
     },
     email: {
       allowNull: false,

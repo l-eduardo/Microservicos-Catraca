@@ -11,7 +11,7 @@ router.get('/:id', (req, res) => {
   res.send('GET request received');
 });
 
-router.post('/', async (req, res) => {
+router.post('/users/', async (req, res) => {
   const userToCreate = req.body;
   try {
     const user = User.build(userToCreate);
