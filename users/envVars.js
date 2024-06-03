@@ -9,4 +9,5 @@ export default {
     NAME: process.env.DB_NAME || 'users',
   },
   PORT: process.env.PORT || 3000,
+  CREDIT_MANAGEMENT_URL: process.env.CREDIT_MANAGEMENT_URL || 'http://localhost:3001',
 }

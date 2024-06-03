@@ -1,7 +1,9 @@
 import User from '../database/models/user.js';
+import { createUserCredit } from '../services/creditManagement.js';
 import express from 'express';
-const router = express.Router();
 
+const router = express.Router(),
+ HTTP_SUCCESS_STATUS_CODE = 200;
 
 router.get('/', (req, res) => {
   res.send('GET all request received');
@@ -15,6 +17,10 @@ router.post('/users/', async (req, res) => {
   const userToCreate = req.body;
   try {
     const user = User.build(userToCreate);
+
+    if(createUserCredit(user.id) !== HTTP_SUCCESS_STATUS_CODE) {
+      throw new Error('Failed to create user credit');
+    }
 
     await user.save();
     res.send(user);

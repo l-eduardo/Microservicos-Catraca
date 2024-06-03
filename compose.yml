@@ -5,6 +5,7 @@
         - "3000:3000"
       environment:
         - PORT=3000
+        - CREDIT_MANAGEMENT_URL=http://credit-managent:3001/credits
         - DB_HOST=users-database
         - DB_PORT=3306
         - DB_USERNAME=root
@@ -24,3 +25,28 @@
           test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
           timeout: 20s
           retries: 10
+    credit-managent:
+      build: ./credit-management/.
+      ports:
+        - "3001:3001"
+      environment:
+        - PORT=3001
+        - DB_HOST=credit-managent-database
+        - DB_PORT=3306
+        - DB_USERNAME=root
+        - DB_PASSWORD=123456
+        - DB_DIALECT=mysql
+      depends_on:
+        credit-managent-database:
+          condition: service_healthy
+    credit-managent-database:
+      image: mysql:latest
+      ports:
+        - "3306"
+      environment:
+        - MYSQL_ROOT_PASSWORD=123456
+      healthcheck:
+          test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+          timeout: 20s
+          retries: 10
+
