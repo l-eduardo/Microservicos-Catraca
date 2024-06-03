@@ -1,0 +1,26 @@
+  services:
+    user:
+      build: ./users/.
+      ports:
+        - "3000:3000"
+      environment:
+        - PORT=3000
+        - DB_HOST=users-database
+        - DB_PORT=3306
+        - DB_USERNAME=root
+        - DB_PASSWORD=123456
+        - DB_DIALECT=mysql
+        - DB_NAME=users
+      depends_on:
+        users-database:
+          condition: service_healthy
+    users-database:
+      image: mysql:latest
+      ports:
+        - "3306"
+      environment:
+        - MYSQL_ROOT_PASSWORD=123456
+      healthcheck:
+          test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+          timeout: 20s
+          retries: 10
