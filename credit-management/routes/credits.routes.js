@@ -39,8 +39,6 @@ router.patch('/credits/payment/:id', async (req, res) => {
 router.patch('/credits/acquire/:id', async (req, res) => {
   const id = req.params.id
   const amount = req.body.amount
-  console.log(id)
-  console.log(amount)
   let userCredits = await Credits.findOne({ where: {id: id} });
   if (!userCredits){
     res.status(404).send({
