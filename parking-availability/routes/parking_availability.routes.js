@@ -30,12 +30,12 @@ router.patch('/parkingLot/in/:id', async (req, res) => {
     })
   } 
   else {
-      parkingLot.availableParkingSpaces -= 1
-      await parkingLot.save()
-      res.send({
-        id: id,
-        newAvailableParkingSpaces: parkingLot.availableParkingSpaces
-      });
+    parkingLot.availableParkingSpaces -= 1
+    await parkingLot.save()
+    res.send({
+      id: id,
+      newAvailableParkingSpaces: parkingLot.availableParkingSpaces
+    });
   }
 });
 
@@ -48,12 +48,12 @@ router.patch('/parkingLot/out/:id', async (req, res) => {
     })
   } 
   else {
-      parkingLot.availableParkingSpaces += 1
-      await parkingLot.save()
-      res.send({
-        id: id,
-        newAvailableParkingSpaces: parkingLot.availableParkingSpaces
-      });
+    parkingLot.availableParkingSpaces += 1
+    await parkingLot.save()
+    res.send({
+      id: id,
+      newAvailableParkingSpaces: parkingLot.availableParkingSpaces
+    });
   }
 });
 

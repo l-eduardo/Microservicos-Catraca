@@ -26,13 +26,14 @@ router.patch('/credits/payment/:id', async (req, res) => {
       error: "User not found"
     })
   }
-
-  userCredits.credits -= amount
-  await userCredits.save()
-  res.send({
-    id: id,
-    newAmount: userCredits
-  });
+  else{
+    userCredits.credits -= amount
+    await userCredits.save()
+    res.send({
+      id: id,
+      newAmount: userCredits
+    });
+  }
 });
 
 router.patch('/credits/acquire/:id', async (req, res) => {
@@ -46,13 +47,14 @@ router.patch('/credits/acquire/:id', async (req, res) => {
       error: "User not found"
     })
   }
-
-  userCredits.credits += amount
-  await userCredits.save()
-  res.send({
-    id: id,
-    newAmount: userCredits.credits
-  });
+  else {
+    userCredits.credits += amount
+    await userCredits.save()
+    res.send({
+      id: id,
+      newAmount: userCredits.credits
+    });
+  }
 });
 
 export default router;
