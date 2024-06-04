@@ -49,4 +49,28 @@
           test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
           timeout: 20s
           retries: 10
+    parking-availability:
+      build: ./parking-availability/.
+      ports:
+        - "3002:3002"
+      environment:
+        - PORT=3002
+        - DB_HOST=parking-availability-database
+        - DB_PORT=3306
+        - DB_USERNAME=root
+        - DB_PASSWORD=123456
+        - DB_DIALECT=mysql
+      depends_on:
+        parking-availability-database:
+          condition: service_healthy
+    parking-availability-database:
+      image: mysql:latest
+      ports:
+        - "3306"
+      environment:
+        - MYSQL_ROOT_PASSWORD=123456
+      healthcheck:
+          test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+          timeout: 20s
+          retries: 10
 
