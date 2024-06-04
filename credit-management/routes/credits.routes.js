@@ -31,7 +31,7 @@ router.patch('/credits/payment/:id', async (req, res) => {
     await userCredits.save()
     res.send({
       id: id,
-      newAmount: userCredits
+      newAmount: userCredits.credits
     });
   }
 });
