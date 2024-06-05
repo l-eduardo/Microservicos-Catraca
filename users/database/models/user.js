@@ -42,6 +42,7 @@ User.init({
     },
   },
   {
+    initialAutoIncrement: 1,
     createdAt: false,
     updatedAt: false,
     modelName: 'User',

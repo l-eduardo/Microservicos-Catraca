@@ -9,6 +9,10 @@ export default {
     OUT: envVars.PARKING_CONTROL_URL + "/out/:id",
   },
   USERS: {
-    GET_CATEGORY: envVars.USERS_URL + "/users/:id/category"
+    GET_CATEGORY: envVars.USERS_URL + "/:id/category"
+  },
+  GATE_CONTROL: {
+    IN: envVars.GATE_CONTROL_URL + "/in/:id",
+    OUT: envVars.GATE_CONTROL_URL + "/out/:id",
   }
 }

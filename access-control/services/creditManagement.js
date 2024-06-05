@@ -8,5 +8,6 @@ export const payment = async (userId, amount) => {
       'Content-Type': 'application/json',
     }
   });
+  console.log('resposnse pay: ', respose);
   return respose.status
 }

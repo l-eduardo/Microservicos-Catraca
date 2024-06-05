@@ -18,42 +18,50 @@ router.post('/parkingLot/', async (req, res) => {
 
 router.patch('/parkingLot/in/:id', async (req, res) => {
   const id = req.params.id
-  let parkingLot = await ParkingAvailability.findOne({ where: {id: id} });
-  if (!parkingLot){
-    res.status(404).send({
-      error: "Parking lot not found"
-    })
-  }
-  if (parkingLot.availableParkingSpaces == 0){
-    res.status(403).send({
-      error: "Parking lot is full"
-    })
-  } 
-  else {
-    parkingLot.availableParkingSpaces -= 1
-    await parkingLot.save()
-    res.send({
-      id: id,
-      newAvailableParkingSpaces: parkingLot.availableParkingSpaces
-    });
+  try{
+    let parkingLot = await ParkingAvailability.findOne({ where: {id: id} });
+    if (!parkingLot){
+      res.status(404).send({
+        error: "Parking lot not found"
+      })
+    }
+    if (parkingLot.availableParkingSpaces == 0){
+      res.status(403).send({
+        error: "Parking lot is full"
+      })
+    }
+    else {
+      parkingLot.availableParkingSpaces -= 1
+      await parkingLot.save()
+      res.send({
+        id: id,
+        newAvailableParkingSpaces: parkingLot.availableParkingSpaces
+      });
+    }
+  } catch (error) {
+    res.status(404).send({error});
   }
 });
 
 router.patch('/parkingLot/out/:id', async (req, res) => {
   const id = req.params.id
-  let parkingLot = await ParkingAvailability.findOne({ where: {id: id} });
-  if (!parkingLot){
-    res.status(404).send({
-      error: "Parking lot not found"
-    })
-  } 
-  else {
-    parkingLot.availableParkingSpaces += 1
-    await parkingLot.save()
-    res.send({
-      id: id,
-      newAvailableParkingSpaces: parkingLot.availableParkingSpaces
-    });
+  try {
+    let parkingLot = await ParkingAvailability.findOne({ where: {id: id} });
+    if (!parkingLot){
+      res.status(404).send({
+        error: "Parking lot not found"
+      })
+    }
+    else {
+      parkingLot.availableParkingSpaces += 1
+      await parkingLot.save()
+      res.send({
+        id: id,
+        newAvailableParkingSpaces: parkingLot.availableParkingSpaces
+      });
+    }
+  } catch (error) {
+    res.status(404).send({error});
   }
 });
 

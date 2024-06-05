@@ -1,0 +1,7 @@
+FROM nginx:alpine-slim
+
+WORKDIR /etc/nginx/
+
+RUN unlink ./conf.d/default.conf
+
+COPY nginx.conf ./conf.d/

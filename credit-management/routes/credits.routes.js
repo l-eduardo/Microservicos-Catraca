@@ -20,38 +20,46 @@ router.post('/credits/', async (req, res) => {
 router.patch('/credits/payment/:id', async (req, res) => {
   const id = req.params.id
   const amount = req.body.amount
-  let userCredits = await Credits.findOne({ where: {id: id} });
-  if (!userCredits){
-    res.status(404).send({
-      error: "User not found"
-    })
-  }
-  else{
-    userCredits.credits -= amount
-    await userCredits.save()
-    res.send({
-      id: id,
-      newAmount: userCredits.credits
-    });
+  try {
+    let userCredits = await Credits.findOne({ where: {id: id} });
+    if (!userCredits){
+      res.status(404).send({
+        error: "User not found"
+      })
+    }
+    else{
+      userCredits.credits -= amount
+      await userCredits.save()
+      res.send({
+        id: id,
+        newAmount: userCredits.credits
+      });
+    }
+  } catch (error) {
+    res.status(404).send({error});
   }
 });
 
 router.patch('/credits/acquire/:id', async (req, res) => {
   const id = req.params.id
   const amount = req.body.amount
-  let userCredits = await Credits.findOne({ where: {id: id} });
-  if (!userCredits){
-    res.status(404).send({
-      error: "User not found"
-    })
-  }
-  else {
-    userCredits.credits += amount
-    await userCredits.save()
-    res.send({
-      id: id,
-      newAmount: userCredits.credits
-    });
+  try {
+    let userCredits = await Credits.findOne({ where: {id: id} });
+    if (!userCredits){
+      res.status(404).send({
+        error: "User not found"
+      })
+    }
+    else {
+      userCredits.credits += amount
+      await userCredits.save()
+      res.send({
+        id: id,
+        newAmount: userCredits.credits
+      });
+    }
+  } catch (error) {
+    res.status(404).send({error});
   }
 });
 

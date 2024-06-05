@@ -34,6 +34,7 @@ Access.init(
     },
   },
   {
+    initialAutoIncrement: 1,
     createdAt: false,
     updatedAt: false,
     modelName: 'Access',

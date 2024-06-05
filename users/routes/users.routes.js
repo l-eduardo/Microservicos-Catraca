@@ -8,31 +8,45 @@ const router = express.Router(),
 
 router.post('/users/', async (req, res) => {
   const userToCreate = req.body;
+  console.log('Creating user: ', userToCreate);
   try {
     const user = User.build(userToCreate);
+    await user.save();
 
-    if(createUserCredit(user.id) !== HTTP_SUCCESS_STATUS_CODE) {
+    if(await createUserCredit(user.id) !== HTTP_SUCCESS_STATUS_CODE) {
       throw new Error('Failed to create user credit');
     }
 
-    await user.save();
+    console.log('User created: ', user.toJSON());
     res.send(user);
   } catch (error) {
-    res.send(error);
+    res.status(HTTP_NOT_FOUND_CODE).send({error});
   }
 });
 
 router.get('/users/:id/category', async (req, res) => {
-  const user = await User.findOne({where: {id: req.query.id}});
-  if (!user){
-    res.status(HTTP_NOT_FOUND_CODE).send({
-      error: "User not found"
-    });
-  }
+  console.log('Getting user category: ', req.params.id);
 
-  res.send({
-    category: user.category
-  });
+  try{
+    const user = await User.findOne({where: {id: req.params.id}});
+    console.log('Getting user category: ', req.params.id);
+
+    if (!user){
+      console.log('User not found');
+      res.status(HTTP_NOT_FOUND_CODE).send({
+        error: "User not found"
+      });
+    }
+
+    res.send({
+      category: user.category
+    });
+  } catch (error) {
+    res.status(HTTP_NOT_FOUND_CODE).send({error});
+  }
 });
+
+router.get('/healtcheck', (req, res) => res.status(HTTP_SUCCESS_STATUS_CODE).send('OK'));
+
 
 export default router;

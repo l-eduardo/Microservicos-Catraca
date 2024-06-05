@@ -8,6 +8,7 @@ export const parking = {
         'Content-Type': 'application/json',
       }
     });
+    console.log('Parking in: ', await respose.json());
     return respose.status
   },
   out: async (parkId) => {
@@ -17,6 +18,7 @@ export const parking = {
         'Content-Type': 'application/json',
       }
     });
+    console.log('Parking out: ', await respose.json());
     return respose.status
   }
 }

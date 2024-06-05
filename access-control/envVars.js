@@ -12,4 +12,5 @@ export default {
   CREDIT_MANAGEMENT_URL: process.env.CREDIT_MANAGEMENT_URL || 'http://localhost:3001',
   PARKING_CONTROL_URL: process.env.PARKING_CONTROL_URL || 'http://localhost:3002',
   USERS_URL: process.env.USERS_URL || 'http://localhost:3003',
+  GATE_CONTROL_URL: process.env.GATE_CONTROL_URL || 'http://localhost:3004',
 }

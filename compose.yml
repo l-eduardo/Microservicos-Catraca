@@ -1,82 +1,126 @@
-  services:
-    user:
-      build: ./users/.
-      ports:
-        - "3000:3000"
-      environment:
-        - PORT=3000
-        - CREDIT_MANAGEMENT_URL=http://credit-managent:3001/credits
-        - DB_HOST=users-database
-        - DB_PORT=3306
-        - DB_USERNAME=root
-        - DB_PASSWORD=123456
-        - DB_DIALECT=mysql
-        - DB_NAME=users
-      depends_on:
-        users-database:
-          condition: service_healthy
-    users-database:
-      image: mysql:latest
-      ports:
-        - "3306"
-      environment:
-        - MYSQL_ROOT_PASSWORD=123456
-      healthcheck:
-          test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-          timeout: 20s
-          retries: 10
-    credit-managent:
-      build: ./credit-management/.
-      ports:
-        - "3001:3001"
-      environment:
-        - PORT=3001
-        - DB_HOST=credit-managent-database
-        - DB_PORT=3306
-        - DB_USERNAME=root
-        - DB_PASSWORD=123456
-        - DB_DIALECT=mysql
-      depends_on:
-        credit-managent-database:
-          condition: service_healthy
-    credit-managent-database:
-      image: mysql:latest
-      ports:
-        - "3306"
-      environment:
-        - MYSQL_ROOT_PASSWORD=123456
-      healthcheck:
-          test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-          timeout: 20s
-          retries: 10
-    parking-availability:
-      build: ./parking-availability/.
-      ports:
-        - "3002:3002"
-      environment:
-        - PORT=3002
-        - DB_HOST=parking-availability-database
-        - DB_PORT=3306
-        - DB_USERNAME=root
-        - DB_PASSWORD=123456
-        - DB_DIALECT=mysql
-      depends_on:
-        parking-availability-database:
-          condition: service_healthy
-    parking-availability-database:
-      image: mysql:latest
-      ports:
-        - "3306"
-      environment:
-        - MYSQL_ROOT_PASSWORD=123456
-      healthcheck:
-          test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-          timeout: 20s
-          retries: 10
-    gate-control:
-      build: ./gate-control/.
-      ports:
-        - "3003:3003"
-      environment:
-        - PORT=3003
+services:
+  user:
+    build: ./users/.
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - CREDIT_MANAGEMENT_URL=http://credit-managent:3001/credits
+      - DB_HOST=users-database
+      - DB_PORT=3306
+      - DB_USERNAME=root
+      - DB_PASSWORD=123456
+      - DB_DIALECT=mysql
+      - DB_NAME=users
+    depends_on:
+      users-database:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "localhost:3000/healtcheck"]
+      interval: 5s
+      timeout: 30s
+      retries: 15
+      start_period: 5s
 
+  users-database:
+    image: mysql:latest
+    ports:
+      - "3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+    healthcheck:
+        test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+        timeout: 20s
+        retries: 10
+  credit-managent:
+    build: ./credit-management/.
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - DB_HOST=credit-managent-database
+      - DB_PORT=3306
+      - DB_USERNAME=root
+      - DB_PASSWORD=123456
+      - DB_DIALECT=mysql
+      - DB_NAME=credits
+    depends_on:
+      credit-managent-database:
+        condition: service_healthy
+  credit-managent-database:
+    image: mysql:latest
+    ports:
+      - "3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+    healthcheck:
+        test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+        timeout: 20s
+        retries: 10
+  parking-availability:
+    build: ./parking-availability/.
+    ports:
+      - "3002:3002"
+    environment:
+      - PORT=3002
+      - DB_HOST=parking-availability-database
+      - DB_PORT=3306
+      - DB_USERNAME=root
+      - DB_PASSWORD=123456
+      - DB_DIALECT=mysql
+      - DB_NAME=parkingAvailability
+    depends_on:
+      parking-availability-database:
+        condition: service_healthy
+  parking-availability-database:
+    image: mysql:latest
+    ports:
+      - "3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+    healthcheck:
+        test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+        timeout: 20s
+        retries: 10
+  gate-control:
+    build: ./gate-control/.
+    ports:
+      - "3003:3003"
+    environment:
+      - PORT=3003
+  access-control:
+    build: ./access-control/.
+    ports:
+      - "3004:3004"
+    environment:
+      - PORT=3004
+      - CREDIT_MANAGEMENT_URL=http://credit-managent:3001/credits
+      - PARKING_CONTROL_URL=http://parking-availability:3002/parkingLot
+      - USERS_URL=http://user:3000/users
+      - GATE_CONTROL_URL=http://gate-control:3003/gateControl
+      - DB_HOST=users-database
+      - DB_PORT=3306
+      - DB_USERNAME=root
+      - DB_PASSWORD=123456
+      - DB_DIALECT=mysql
+      - DB_NAME=access
+    depends_on:
+      access-control-database:
+        condition: service_healthy
+  access-control-database:
+        image: mysql:latest
+        ports:
+          - "3306"
+        environment:
+          - MYSQL_ROOT_PASSWORD=123456
+        healthcheck:
+            test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+            timeout: 20s
+            retries: 10
+  nginx:
+    build: ./nginx/.
+    ports:
+      - "80:80"
+    depends_on:
+      user:
+        condition: service_healthy
