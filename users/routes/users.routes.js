@@ -3,15 +3,8 @@ import { createUserCredit } from '../services/creditManagement.js';
 import express from 'express';
 
 const router = express.Router(),
- HTTP_SUCCESS_STATUS_CODE = 200;
-
-router.get('/', (req, res) => {
-  res.send('GET all request received');
-});
-
-router.get('/:id', (req, res) => {
-  res.send('GET request received');
-});
+ HTTP_SUCCESS_STATUS_CODE = 200,
+ HTTP_NOT_FOUND_CODE = 404;
 
 router.post('/users/', async (req, res) => {
   const userToCreate = req.body;
@@ -29,8 +22,17 @@ router.post('/users/', async (req, res) => {
   }
 });
 
-router.delete('/:id', (req, res) => {
-  res.send(`DELETE request received for user with ID ${req.params.id}`);
+router.get('/users/:id/category', async (req, res) => {
+  const user = await User.findOne({where: {id: req.query.id}});
+  if (!user){
+    res.status(HTTP_NOT_FOUND_CODE).send({
+      error: "User not found"
+    });
+  }
+
+  res.send({
+    category: user.category
+  });
 });
 
 export default router;
